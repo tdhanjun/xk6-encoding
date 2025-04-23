@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/dop251/goja v0.0.0-20230427124612-428fc442ff5f
 	github.com/stretchr/testify v1.8.2
-	go.k6.io/k6 v0.56.0
+	go.k6.io/k6 v0.58.0
 	golang.org/x/text v0.8.0
 	gopkg.in/guregu/null.v3 v3.5.0
 )
