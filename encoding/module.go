@@ -5,7 +5,7 @@ package encoding
 import (
 	"errors"
 
-	"github.com/grafana/sobek"
+	"github.com/dop251/goja"
 	"go.k6.io/k6/js/common"
 	"go.k6.io/k6/js/modules"
 )
@@ -38,7 +38,7 @@ func New() *RootModule {
 // NewModuleInstance implements the modules.Module interface and returns
 // a new instance for each VU.
 func (*RootModule) NewModuleInstance(vu modules.VU) modules.Instance {
-	vu.Runtime().SetFieldNameMapper(sobek.TagFieldNameMapper("js", true))
+	vu.Runtime().SetFieldNameMapper(goja.TagFieldNameMapper("js", true))
 
 	return &ModuleInstance{
 		vu:          vu,
@@ -57,7 +57,7 @@ func (mi *ModuleInstance) Exports() modules.Exports {
 }
 
 // NewTextDecoder is the JS constructor for the TextDecoder object.
-func (mi *ModuleInstance) NewTextDecoder(call sobek.ConstructorCall) *sobek.Object {
+func (mi *ModuleInstance) NewTextDecoder(call goja.ConstructorCall) *goja.Object {
 	rt := mi.vu.Runtime()
 
 	// Parse the label parameter
@@ -83,7 +83,7 @@ func (mi *ModuleInstance) NewTextDecoder(call sobek.ConstructorCall) *sobek.Obje
 }
 
 // NewTextEncoder is the JS constructor for the TextEncoder object.
-func (mi *ModuleInstance) NewTextEncoder(_ sobek.ConstructorCall) *sobek.Object {
+func (mi *ModuleInstance) NewTextEncoder(_ goja.ConstructorCall) *goja.Object {
 	return newTextEncoderObject(mi.vu.Runtime(), NewTextEncoder())
 }
 
@@ -94,11 +94,11 @@ func (mi *ModuleInstance) NewTextEncoder(_ sobek.ConstructorCall) *sobek.Object 
 //
 // In the event setting the properties on the object where to fail, the function
 // will throw a JS exception.
-func newTextDecoderObject(rt *sobek.Runtime, td *TextDecoder) *sobek.Object {
+func newTextDecoderObject(rt *goja.Runtime, td *TextDecoder) *goja.Object {
 	obj := rt.NewObject()
 
 	// Wrap the Go TextDecoder.Decode method in a JS function
-	decodeMethod := func(buffer sobek.Value, options decodeOptions) string {
+	decodeMethod := func(buffer goja.Value, options decodeOptions) string {
 		data, err := exportArrayBuffer(rt, buffer)
 		if err != nil {
 			common.Throw(rt, err)
@@ -147,11 +147,11 @@ func newTextDecoderObject(rt *sobek.Runtime, td *TextDecoder) *sobek.Object {
 	return obj
 }
 
-func newTextEncoderObject(rt *sobek.Runtime, te *TextEncoder) *sobek.Object {
+func newTextEncoderObject(rt *goja.Runtime, te *TextEncoder) *goja.Object {
 	obj := rt.NewObject()
 
 	// Wrap the Go TextEncoder.Encode method in a JS function
-	encodeMethod := func(s sobek.Value) *sobek.Object {
+	encodeMethod := func(s goja.Value) *goja.Object {
 		buffer, err := te.Encode(s.String())
 		if err != nil {
 			common.Throw(rt, err)
