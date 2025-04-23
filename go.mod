@@ -7,7 +7,7 @@ toolchain go1.23.3
 require (
 	github.com/grafana/sobek v0.0.0-20241024150027-d91f02b05e9b
 	github.com/stretchr/testify v1.9.0
-	go.k6.io/k6 v0.55.0
+	go.k6.io/k6 v0.58.0
 	golang.org/x/text v0.19.0
 	gopkg.in/guregu/null.v3 v3.5.0
 )
